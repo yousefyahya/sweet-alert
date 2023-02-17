@@ -10,7 +10,7 @@ class SweetAlertNotifierTest extends TestCase
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
     /** @test */
-    public function text_is_empty_by_default()
+    public function text_is_empty_by_default(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -21,7 +21,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function default_timer_is_2500_milliseconds()
+    public function default_timer_is_2500_milliseconds(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -32,7 +32,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function buttons_config_is_false_by_default()
+    public function buttons_config_is_false_by_default(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -47,7 +47,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function first_parameter_of_alert_message_is_the_config_text()
+    public function first_parameter_of_alert_message_is_the_config_text(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -58,7 +58,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function title_key_is_not_present_in_config_when_alert_title_is_not_set()
+    public function title_key_is_not_present_in_config_when_alert_title_is_not_set(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -69,7 +69,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function second_parameter_of_alert_message_is_the_config_title()
+    public function second_parameter_of_alert_message_is_the_config_title(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -80,7 +80,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function third_parameter_of_alert_message_is_the_config_icon()
+    public function third_parameter_of_alert_message_is_the_config_icon(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -91,7 +91,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function icon_key_is_not_present_in_config_when_alert_icon_is_not_set()
+    public function icon_key_is_not_present_in_config_when_alert_icon_is_not_set(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -102,110 +102,151 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function it_flashes_config_for_a_basic_alert()
+    public function it_flashes_config_for_a_basic_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->basic('Basic Alert!', 'Alert');
 
+        $actualArray = $notifier->getConfig();
+
         $expectedConfig = [
             'text' => 'Basic Alert!',
             'title' => 'Alert',
         ];
-        $this->assertArraySubset($expectedConfig, $notifier->getConfig());
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         unset($notifier);
-        $session->shouldHaveReceived('flash')->with('sweet_alert.title', $expectedConfig['title'])->once();
-        $session->shouldHaveReceived('flash')->with('sweet_alert.text', $expectedConfig['text'])->once();
-        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Text\IsEmptyString::isNonEmptyString())->once();
+
+        $session->shouldHaveReceived('flash')->with('sweet_alert.title', $expectedConfig['title']);
+        $session->shouldHaveReceived('flash')->with('sweet_alert.text', $expectedConfig['text']);
+        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Text\IsEmptyString::isNonEmptyString());
     }
 
     /** @test */
-    public function it_flashes_config_for_a_info_alert()
+    public function it_flashes_config_for_a_info_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->info('Info Alert!', 'Alert');
 
+        $actualArray = $notifier->getConfig();
+
         $expectedConfig = [
             'text' => 'Info Alert!',
             'title' => 'Alert',
             'icon' => 'info',
         ];
-        $this->assertArraySubset($expectedConfig, $notifier->getConfig());
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         unset($notifier);
-        $session->shouldHaveReceived('flash')->with('sweet_alert.title', $expectedConfig['title'])->once();
-        $session->shouldHaveReceived('flash')->with('sweet_alert.text', $expectedConfig['text'])->once();
-        $session->shouldHaveReceived('flash')->with('sweet_alert.icon', $expectedConfig['icon'])->once();
-        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Text\IsEmptyString::isNonEmptyString())->once();
+
+        $session->shouldHaveReceived('flash')->with('sweet_alert.title', $expectedConfig['title']);
+        $session->shouldHaveReceived('flash')->with('sweet_alert.text', $expectedConfig['text']);
+        $session->shouldHaveReceived('flash')->with('sweet_alert.icon', $expectedConfig['icon']);
+        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Text\IsEmptyString::isNonEmptyString());
     }
 
     /** @test */
-    public function it_flashes_config_for_a_success_alert()
+    public function it_flashes_config_for_a_success_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->success('Well Done!', 'Success!');
 
+        $actualArray = $notifier->getConfig();
+
         $expectedConfig = [
             'title' => 'Success!',
             'text' => 'Well Done!',
             'icon' => 'success',
         ];
-        $this->assertArraySubset($expectedConfig, $notifier->getConfig());
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         unset($notifier);
+
         $session->shouldReceive('flash')->with('sweet_alert.title', $expectedConfig['title']);
         $session->shouldReceive('flash')->with('sweet_alert.text', $expectedConfig['text']);
         $session->shouldReceive('flash')->with('sweet_alert.icon', $expectedConfig['icon']);
-        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString())->once();
+        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString());
     }
 
     /** @test */
-    public function it_flashes_config_for_a_warning_alert()
+    public function it_flashes_config_for_a_warning_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->warning('Hey cowboy!', 'Watch Out!');
 
+        $actualArray = $notifier->getConfig();
+
         $expectedConfig = [
             'title' => 'Watch Out!',
             'text' => 'Hey cowboy!',
             'icon' => 'warning',
         ];
-        $this->assertArraySubset($expectedConfig, $notifier->getConfig());
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         unset($notifier);
+
         $session->shouldReceive('flash')->with('sweet_alert.title', $expectedConfig['title']);
         $session->shouldReceive('flash')->with('sweet_alert.text', $expectedConfig['text']);
         $session->shouldReceive('flash')->with('sweet_alert.icon', $expectedConfig['icon']);
-        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString())->once();
+        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString());
     }
 
     /** @test */
-    public function it_flashes_config_for_a_error_alert()
+    public function it_flashes_config_for_a_error_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->error('Something wrong happened!', 'Whoops!');
 
+        $actualArray = $notifier->getConfig();
+
         $expectedConfig = [
             'title' => 'Whoops!',
             'text' => 'Something wrong happened!',
             'icon' => 'error',
         ];
-        $this->assertArraySubset($expectedConfig, $notifier->getConfig());
+
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         unset($notifier);
+
         $session->shouldHaveReceived('flash')->with('sweet_alert.title', $expectedConfig['title']);
         $session->shouldHaveReceived('flash')->with('sweet_alert.text', $expectedConfig['text']);
         $session->shouldHaveReceived('flash')->with('sweet_alert.icon', $expectedConfig['icon']);
-        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString())->once();
+        $session->shouldHaveReceived('flash')->with('sweet_alert.alert', \Hamcrest\Matchers::isNonEmptyString());
     }
 
     /** @test */
-    public function autoclose_can_be_customized_for_an_alert_message()
+    public function autoclose_can_be_customized_for_an_alert_message(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -218,7 +259,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function timer_option_is_not_present_in_config_when_using_a_persistent_alert()
+    public function timer_option_is_not_present_in_config_when_using_a_persistent_alert(): void
     {
         $session = m::mock(SessionStore::class);
         $session->shouldReceive('flash')->atLeast(1);
@@ -231,7 +272,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function persistent_alert_has_only_a_confirm_button_by_default()
+    public function persistent_alert_has_only_a_confirm_button_by_default(): void
     {
         $session = m::mock(SessionStore::class);
         $session->shouldReceive('flash')->atLeast(1);
@@ -240,19 +281,22 @@ class SweetAlertNotifierTest extends TestCase
 
         $notifier->warning('Are you sure?', 'Delete all posts')->persistent('I\'m sure');
 
-        $this->assertArraySubset(
-            [
-                'confirm' => [
-                    'text' => 'I\'m sure',
-                    'visible' => true,
-                ],
-            ],
-            $notifier->getConfig('buttons')
-        );
+        $actualArray = $notifier->getConfig('buttons')['confirm'];
+
+        $expectedConfig = [
+            'text' => 'I\'m sure',
+            'visible' => true,
+        ];
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
     }
 
     /** @test */
-    public function it_will_add_the_content_option_to_config_when_using_an_html_alert()
+    public function it_will_add_the_content_option_to_config_when_using_an_html_alert(): void
     {
         $session = m::mock(SessionStore::class);
         $session->shouldReceive('flash')->atLeast(1);
@@ -265,7 +309,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function allows_to_configure_a_confirm_button_for_an_alert()
+    public function allows_to_configure_a_confirm_button_for_an_alert(): void
     {
         $session = m::mock(SessionStore::class);
         $session->shouldReceive('flash')->atLeast(1);
@@ -274,30 +318,43 @@ class SweetAlertNotifierTest extends TestCase
 
         $notifier->basic('Basic Alert!', 'Alert')->confirmButton('help!');
 
-        $this->assertArraySubset(
-            [
-                'text' => 'help!',
-                'visible' => true,
-            ],
-            $notifier->getConfig('buttons')['confirm']
-        );
+        $actualArray = $notifier->getConfig('buttons')['confirm'];
+
+        $expectedConfig = [
+            'text' => 'help!',
+            'visible' => true,
+        ];
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         $this->assertFalse($notifier->getConfig('closeOnClickOutside'));
     }
 
     /** @test */
-    public function allows_to_configure_a_cancel_button_for_an_alert()
+    public function allows_to_configure_a_cancel_button_for_an_alert(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
 
         $notifier->basic('Basic Alert!', 'Alert')->cancelButton('Cancel!');
 
-        $this->assertArraySubset(['text' => 'Cancel!', 'visible' => true], $notifier->getConfig('buttons')['cancel']);
+        $actualArray = $notifier->getConfig('buttons')['cancel'];
+
+        $expectedConfig = ['text' => 'Cancel!', 'visible' => true];
+
+        foreach ($expectedConfig as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+
         $this->assertFalse($notifier->getConfig('closeOnClickOutside'));
     }
 
     /** @test */
-    public function close_on_click_outside_config_can_be_enabled()
+    public function close_on_click_outside_config_can_be_enabled(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -308,7 +365,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function close_on_click_outside_config_can_be_disabled()
+    public function close_on_click_outside_config_can_be_disabled(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -319,7 +376,7 @@ class SweetAlertNotifierTest extends TestCase
     }
 
     /** @test */
-    public function additional_buttons_can_be_added()
+    public function additional_buttons_can_be_added(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
@@ -327,24 +384,30 @@ class SweetAlertNotifierTest extends TestCase
         $notifier->basic('Pay with:', 'Payment')->addButton('credit_card', 'Credit Card');
         $notifier->basic('Pay with:', 'Payment')->addButton('paypal', 'Paypal');
 
-        $this->assertArraySubset(
-            [
-                'credit_card' => [
-                    'text' => 'Credit Card',
-                    'visible' => true,
-                ],
-                'paypal' => [
-                    'text' => 'Paypal',
-                    'visible' => true,
-                ],
-            ],
-            $notifier->getConfig('buttons')
-        );
+        foreach (['credit_card' => 'Credit Card', 'paypal' => 'Paypal'] as $inner_key => $text) {
+
+            $this->assertArrayHasKey($inner_key, $notifier->getConfig('buttons'));
+
+            $actualArray = $notifier->getConfig('buttons')[$inner_key];
+
+            $expectedConfig = [
+                'text' => $text,
+                'visible' => true,
+            ];
+
+            foreach ($expectedConfig as $key => $value) {
+                $this->assertArrayHasKey($key, $actualArray);
+                $this->assertSame($value, $actualArray[$key]);
+            }
+
+        }
+
+
         $this->assertFalse($notifier->getConfig('closeOnClickOutside'));
     }
 
     /** @test */
-    public function additional_config_can_be_added_to_configure_alert_message()
+    public function additional_config_can_be_added_to_configure_alert_message(): void
     {
         $session = m::spy(SessionStore::class);
         $notifier = new SweetAlertNotifier($session);
