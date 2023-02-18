@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false" 
-    backupStaticAttributes="false" 
-    bootstrap="vendor/autoload.php" 
-    colors="true" 
-    convertErrorsToExceptions="true" 
-    convertNoticesToExceptions="true" 
-    convertWarningsToExceptions="true" 
-    processIsolation="false" 
-    stopOnError="false" 
-    stopOnFailure="false" 
-    verbose="true">
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         verbose="true">
     <testsuites>
         <testsuite name="SweetAlert Test Suite">
             <directory suffix="Test.php">./tests</directory>
@@ -20,4 +21,5 @@
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+
 </phpunit>
