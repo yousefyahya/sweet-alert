@@ -11,7 +11,7 @@
 Require the package using Composer.
 
 ```bash
-composer require uxweb/sweet-alert
+composer require yousefyahya/sweet-alert
 ```
 
 If using laravel < 5.5 include the service provider and alias within `config/app.php`.
